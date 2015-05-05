@@ -53,7 +53,13 @@ character = function(posx, posy,charaId) {
   this.move = CHARACTER_PARAMETER[charaId].move;
   this.id = CHARACTER_PARAMETER[charaId].id;
 }
-test_Daisyo = new character(9,9,1);
+
+test_Friend = [];
+test_Friend[0] = new character(9, 9, 0);
+test_Friend[1] = new character(8, 9, 3);
+test_Friend[2] = new character(10, 9, 3);
+test_Friend[3] = new character(9, 8, 3);
+test_Friend[4] = new character(9, 10, 3);
 
 // Declarations
 var selectX = -1;
@@ -72,17 +78,17 @@ $(function(){
     /*
     (selectY, selectX)
     */
+    var i;
     ctxCanvas.clearRect(0,0,PLAYGROUND_WIDTH,PLAYGROUND_WIDTH);
 
     selectX = (e.pageX - canvasPosition.left) / NUMBER_OF_PLAYGROUND_LINE;
     selectY = (e.pageY - canvasPosition.top) / NUMBER_OF_PLAYGROUND_LINE;
 
     console.log(Math.floor(selectY) + "," + Math.floor(selectX));
-    test_Daisyo.posx = selectX;
-    test_Daisyo.posy = selectY;
     drawField();
-
-    drawCharacter(test_Daisyo.posx,test_Daisyo.posy,test_Daisyo.id);
+    for (i=0;i<5;i++){
+      drawCharacter(test_Friend[i].posx,test_Friend[i].posy,test_Friend[i].id);
+    }
   });
 
   console.log(CHARACTER_PARAMETER[3].name);
@@ -108,12 +114,30 @@ $(function(){
 
   /* Load function */
   drawField();
+
+    for (i=0;i<5;i++){
+      drawCharacter(test_Friend[i].posx,test_Friend[i].posy,test_Friend[i].id);
+    }
 });
 
 function drawCharacter(posx,posy,charaId){
   var obj = convertPosition(posx, posy, false);
-  ctxCanvas.beginPath();
-  ctxCanvas.arc(obj.x, obj.y, 10, 0, Math.PI*2);
+  ctxCanvas.font = "18px 'MS Pゴシック'";
+  ctxCanvas.fillStyle = "red";
+  switch(charaId){
+    case 0:
+      ctxCanvas.fillText("D",obj.x, obj.y);
+      break;
+    case 1:
+      ctxCanvas.fillText("P",obj.x, obj.y);
+      break;
+    case 2:
+      ctxCanvas.fillText("H",obj.x, obj.y);
+      break;
+    case 3:
+      ctxCanvas.fillText("M",obj.x, obj.y);
+      break;
+  }
   ctxCanvas.stroke();
 }
 
