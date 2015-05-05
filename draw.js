@@ -2,43 +2,47 @@ var PLAYGROUND_WIDTH = 600;
 var NUMBER_OF_SQUARE = 17;
 var NUMBER_OF_PLAYGROUND_LINE = NUMBER_OF_SQUARE / PLAYGROUND_WIDTH;
 
-var CHARACTER_PARAMETER = {
-  "daisyo":{
+var CHARACTER_PARAMETER = [
+  {
+    "name": "daisyo",
     "cost": 1,
     "hitPoint": 3,
     "attack": 1,
     "attacableRange": 2,
     "move": 1
   },
-  "pupepon":{
+  {
+    "name": "pupepon",
     "cost": 3,
     "hitPoint": 7,
     "attack": 3,
     "attacableRange": 2,
     "move": 3
   },
-  "haseaki":{
+  {
+    "name": "haseaki",
     "cost": 2,
     "hitPoint": 3,
     "attack": 2,
     "attacableRange": 2,
     "move": 2
   },
-  "miho":{
+  {
+    "name": "miho",
     "cost": 5,
     "hitPoint": 8,
     "attack": 3,
     "attacableRange": 2,
     "move": 2
   }
-}
+]
 
 $(function(){
   /* canvas */
   playGround = $("#play-ground").get(0);
   ctxCanvas  = playGround.getContext("2d");
 
-  console.log(CHARACTER_PARAMETER.miho.cost);
+  console.log(CHARACTER_PARAMETER[3].name);
 
   /* Load function */
   drawField();
