@@ -66,11 +66,10 @@ $(function(){
     /*
     (selectY, selectX)
     */
-    selectX = e.pageX - canvasPosition.left;
-    selectY = e.pageY - canvasPosition.top;
+    selectX = (e.pageX - canvasPosition.left) / NUMBER_OF_PLAYGROUND_LINE;
+    selectY = (e.pageY - canvasPosition.top) / NUMBER_OF_PLAYGROUND_LINE;
 
-    console.log(Math.floor(selectY / NUMBER_OF_PLAYGROUND_LINE) + "," + Math.floor(selectX / NUMBER_OF_PLAYGROUND_LINE));
-
+    console.log(Math.floor(selectY) + "," + Math.floor(selectX));
   });
 
   console.log(CHARACTER_PARAMETER[3].name);
@@ -101,3 +100,35 @@ function drawField(){
   }
 
 }
+// ==============================================================================================
+/*
+  posX: x座標,
+  posY: y座標,
+  flag:
+    true : 座標 -> マス
+    false: マス   -> 座標 
+*/
+function convertPosition(posX, posY, flag) {
+  var canvasPosition = $('#play-ground').position();
+  var tx;
+  var ty;
+
+  posX = Math.floor(posX);
+  posY = Math.floor(posY);
+
+  if (flag === true) {
+    tx = posX / NUMBER_OF_PLAYGROUND_LINE;
+    ty = posY / NUMBER_OF_PLAYGROUND_LINE;
+
+    return {x: Math.floor(tx), y: Math.floor(ty)}
+  }
+  else if (flag === false) {
+    tx = (posX + 1) * (NUMBER_OF_PLAYGROUND_LINE) - (NUMBER_OF_PLAYGROUND_LINE / 2);
+    ty = (posY + 1) * (NUMBER_OF_PLAYGROUND_LINE) - (NUMBER_OF_PLAYGROUND_LINE / 2);
+
+    return {x: Math.floor(tx), y: Math.floor(ty)}
+  }
+
+  // 失敗したときのために
+  return {x: -1, y: -1}
+};
