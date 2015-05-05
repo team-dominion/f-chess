@@ -37,6 +37,18 @@ var CHARACTER_PARAMETER = [
   }
 ]
 
+character = function(posx, posy,charaId) {
+  this.posx = posx;
+  this.posy = posy;
+  this.charaId = charaId;
+  this.name = CHARACTER_PARAMETER[charaId].name;
+  this.cost = CHARACTER_PARAMETER[charaId].cost;
+  this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
+  this.attack = CHARACTER_PARAMETER[charaId].attack;
+  this.attacableRange = CHARACTER_PARAMETER[charaId].attacableRange;
+  this.move = CHARACTER_PARAMETER[charaId].move;
+}
+
 // Declarations
 var selectX = -1;
 var selectY = -1;
