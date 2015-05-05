@@ -87,6 +87,24 @@ $(function(){
 
   console.log(CHARACTER_PARAMETER[3].name);
 
+  // hover
+  $('#play-ground').mousemove(function(e) {
+    overX = (e.pageX - canvasPosition.left) / NUMBER_OF_PLAYGROUND_LINE;
+    overY = (e.pageY - canvasPosition.top) / NUMBER_OF_PLAYGROUND_LINE;
+
+    ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
+
+    var obj = convertPosition(overX, overY, false);
+    ctxCanvas.lineWidth = 0.0;
+    ctxCanvas.fillStyle = 'rgb(192, 80, 77)';
+    ctxCanvas.globalAlpha = 0.7;
+    ctxCanvas.beginPath();
+    ctxCanvas.fillRect(obj.x - NUMBER_OF_PLAYGROUND_LINE / 2, obj.y - NUMBER_OF_PLAYGROUND_LINE / 2 , NUMBER_OF_PLAYGROUND_LINE, NUMBER_OF_PLAYGROUND_LINE);
+    ctxCanvas.stroke();
+
+    drawField();
+
+  });
 
   /* Load function */
   drawField();
