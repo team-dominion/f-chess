@@ -1,6 +1,6 @@
-var PLAYGROUND_WIDTH = 600;
 var NUMBER_OF_SQUARE = 17;
-var NUMBER_OF_PLAYGROUND_LINE = PLAYGROUND_WIDTH / NUMBER_OF_SQUARE;
+var PLAYGROUND_WIDTH = 600;
+var SQUARE_WIDTH = PLAYGROUND_WIDTH / NUMBER_OF_SQUARE;
 
 var CHARACTER_PARAMETER = [
   {
@@ -45,70 +45,73 @@ character = function(posx, posy,charaId) {
   this.posx = posx;
   this.posy = posy;
   this.charaId = charaId;
+  this.id = CHARACTER_PARAMETER[charaId].id;
   this.name = CHARACTER_PARAMETER[charaId].name;
   this.cost = CHARACTER_PARAMETER[charaId].cost;
   this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
   this.attack = CHARACTER_PARAMETER[charaId].attack;
   this.attacableRange = CHARACTER_PARAMETER[charaId].attacableRange;
   this.move = CHARACTER_PARAMETER[charaId].move;
-  this.id = CHARACTER_PARAMETER[charaId].id;
 }
 test_Daisyo = new character(9,9,1);
 
 // Declarations
 var selectX = -1;
 var selectY = -1;
+var overX = -1;
+var overY = -1;
 
-
+// ==============================================================================================
 $(function(){
   /* canvas */
   playGround = $("#play-ground").get(0);
   ctxCanvas  = playGround.getContext("2d");
+  canvasPosition = $('#play-ground').position();
 
-  // クリック処理
-  var canvasPosition = $('#play-ground').position();
-
-  $('#play-ground').click(function(e) {
-    /*
-    (selectY, selectX)
-    */
-    ctxCanvas.clearRect(0,0,PLAYGROUND_WIDTH,PLAYGROUND_WIDTH);
-
-    selectX = (e.pageX - canvasPosition.left) / NUMBER_OF_PLAYGROUND_LINE;
-    selectY = (e.pageY - canvasPosition.top) / NUMBER_OF_PLAYGROUND_LINE;
-
-    console.log(Math.floor(selectY) + "," + Math.floor(selectX));
-    test_Daisyo.posx = selectX;
-    test_Daisyo.posy = selectY;
-    drawField();
-
-    drawCharacter(test_Daisyo.posx,test_Daisyo.posy,test_Daisyo.id);
+  /* Event */
+  $('#play-ground').bind({
+    "mousemove": function(e){
+      redraw(e);
+    },
+    "click": function(e){
+      selectCharacter(e);
+      redraw(e);
+    }
   });
 
+  /* For Debug */
   console.log(CHARACTER_PARAMETER[3].name);
 
-  // hover
-  $('#play-ground').mousemove(function(e) {
-    overX = (e.pageX - canvasPosition.left) / NUMBER_OF_PLAYGROUND_LINE;
-    overY = (e.pageY - canvasPosition.top) / NUMBER_OF_PLAYGROUND_LINE;
+});
 
-    ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
+// ==============================================================================================
+function redraw(e){
+  ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
+  drawHoverMarker(e);
+  //drawCharacter();
+  drawCharacter(test_Daisyo.posx,test_Daisyo.posy,test_Daisyo.id);
+  drawField();
+}
 
-    var obj = convertPosition(overX, overY, false);
+function drawHoverMarker(e){
+    if (!e) {
+      console.log("drawHoverMarker !e");
+    } else {
+      overX = (e.pageX - canvasPosition.left) / SQUARE_WIDTH;
+      overY = (e.pageY - canvasPosition.top) / SQUARE_WIDTH;
+
+      var obj = convertPosition(overX, overY, false);
+      obj.x -= SQUARE_WIDTH / 2;
+      obj.y -= SQUARE_WIDTH / 2;
+    };
+
     ctxCanvas.lineWidth = 0.0;
     ctxCanvas.fillStyle = 'rgb(192, 80, 77)';
     ctxCanvas.globalAlpha = 0.7;
     ctxCanvas.beginPath();
-    ctxCanvas.fillRect(obj.x - NUMBER_OF_PLAYGROUND_LINE / 2, obj.y - NUMBER_OF_PLAYGROUND_LINE / 2 , NUMBER_OF_PLAYGROUND_LINE, NUMBER_OF_PLAYGROUND_LINE);
+    ctxCanvas.fillRect(obj.x, obj.y, SQUARE_WIDTH, SQUARE_WIDTH);
     ctxCanvas.stroke();
-
-    drawField();
-
-  });
-
-  /* Load function */
-  drawField();
-});
+}
 
 function drawCharacter(posx,posy,charaId){
   var obj = convertPosition(posx, posy, false);
@@ -128,15 +131,29 @@ function drawField(){
       ctxCanvas.beginPath();
       ctxCanvas.lineWidth = 1.0;
     }
-    ctxCanvas.moveTo(i * NUMBER_OF_PLAYGROUND_LINE, 0);
-    ctxCanvas.lineTo(i * NUMBER_OF_PLAYGROUND_LINE, PLAYGROUND_WIDTH);
+    ctxCanvas.moveTo(i * SQUARE_WIDTH, 0);
+    ctxCanvas.lineTo(i * SQUARE_WIDTH, PLAYGROUND_WIDTH);
     ctxCanvas.stroke();
-    ctxCanvas.moveTo(0, i * NUMBER_OF_PLAYGROUND_LINE);
-    ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * NUMBER_OF_PLAYGROUND_LINE);
+    ctxCanvas.moveTo(0, i * SQUARE_WIDTH);
+    ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * SQUARE_WIDTH);
     ctxCanvas.stroke();
   }
 
 }
+
+function selectCharacter(e){
+    /*
+    (selectY, selectX)
+    */
+    if (e) {
+      selectX = (e.pageX - canvasPosition.left) / SQUARE_WIDTH;
+      selectY = (e.pageY - canvasPosition.top) / SQUARE_WIDTH;
+    };
+
+    test_Daisyo.posx = selectX;
+    test_Daisyo.posy = selectY;
+}
+
 // ==============================================================================================
 /*
   posX: x座標,
@@ -154,14 +171,14 @@ function convertPosition(posX, posY, flag) {
   posY = Math.floor(posY);
 
   if (flag === true) {
-    tx = posX / NUMBER_OF_PLAYGROUND_LINE;
-    ty = posY / NUMBER_OF_PLAYGROUND_LINE;
+    tx = posX / SQUARE_WIDTH;
+    ty = posY / SQUARE_WIDTH;
 
     return {x: Math.floor(tx), y: Math.floor(ty)}
   }
   else if (flag === false) {
-    tx = (posX + 1) * (NUMBER_OF_PLAYGROUND_LINE) - (NUMBER_OF_PLAYGROUND_LINE / 2);
-    ty = (posY + 1) * (NUMBER_OF_PLAYGROUND_LINE) - (NUMBER_OF_PLAYGROUND_LINE / 2);
+    tx = (posX + 1) * (SQUARE_WIDTH) - (SQUARE_WIDTH / 2);
+    ty = (posY + 1) * (SQUARE_WIDTH) - (SQUARE_WIDTH / 2);
 
     return {x: Math.floor(tx), y: Math.floor(ty)}
   }
