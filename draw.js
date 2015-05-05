@@ -37,15 +37,35 @@ var CHARACTER_PARAMETER = [
   }
 ]
 
+// Declarations
+var selectX = -1;
+var selectY = -1;
+
+
 $(function(){
   /* canvas */
   playGround = $("#play-ground").get(0);
   ctxCanvas  = playGround.getContext("2d");
 
+  // クリック処理
+  var canvasPosition = $('#play-ground').position();
+
+  $('#play-ground').click(function(e) {
+    /*
+    (selectY, selectX)
+    */
+    selectY = e.pageX - canvasPosition.left;
+    selectX = e.pageY - canvasPosition.top;
+
+  });
+
+  console.log(Math.floor(selectX / NUMBER_OF_PLAYGROUND_LINE) + "," + Math.floor(selectY / NUMBER_OF_PLAYGROUND_LINE));
   console.log(CHARACTER_PARAMETER[3].name);
+
 
   /* Load function */
   drawField();
+
 });
 
 function drawField(){
