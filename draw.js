@@ -1,6 +1,6 @@
 var PLAYGROUND_WIDTH = 600;
 var NUMBER_OF_SQUARE = 17;
-var NUMBER_OF_PLAYGROUND_LINE = NUMBER_OF_SQUARE / PLAYGROUND_WIDTH;
+var NUMBER_OF_PLAYGROUND_LINE = PLAYGROUND_WIDTH / NUMBER_OF_SQUARE;
 
 var CHARACTER_PARAMETER = [
   {
@@ -54,12 +54,13 @@ $(function(){
     /*
     (selectY, selectX)
     */
-    selectY = e.pageX - canvasPosition.left;
-    selectX = e.pageY - canvasPosition.top;
+    selectX = e.pageX - canvasPosition.left;
+    selectY = e.pageY - canvasPosition.top;
+
+    console.log(Math.floor(selectY / NUMBER_OF_PLAYGROUND_LINE) + "," + Math.floor(selectX / NUMBER_OF_PLAYGROUND_LINE));
 
   });
 
-  console.log(Math.floor(selectX / NUMBER_OF_PLAYGROUND_LINE) + "," + Math.floor(selectY / NUMBER_OF_PLAYGROUND_LINE));
   console.log(CHARACTER_PARAMETER[3].name);
 
 
@@ -79,11 +80,11 @@ function drawField(){
       ctxCanvas.beginPath();
       ctxCanvas.lineWidth = 1.0;
     }
-    ctxCanvas.moveTo(i * PLAYGROUND_WIDTH/NUMBER_OF_SQUARE,0);
-    ctxCanvas.lineTo(i * PLAYGROUND_WIDTH/NUMBER_OF_SQUARE, PLAYGROUND_WIDTH);
+    ctxCanvas.moveTo(i * NUMBER_OF_PLAYGROUND_LINE, 0);
+    ctxCanvas.lineTo(i * NUMBER_OF_PLAYGROUND_LINE, PLAYGROUND_WIDTH);
     ctxCanvas.stroke();
-    ctxCanvas.moveTo(0, i * PLAYGROUND_WIDTH/NUMBER_OF_SQUARE);
-    ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * PLAYGROUND_WIDTH/NUMBER_OF_SQUARE);
+    ctxCanvas.moveTo(0, i * NUMBER_OF_PLAYGROUND_LINE);
+    ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * NUMBER_OF_PLAYGROUND_LINE);
     ctxCanvas.stroke();
   }
 
