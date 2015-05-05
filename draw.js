@@ -53,7 +53,13 @@ character = function(posx, posy,charaId) {
   this.attacableRange = CHARACTER_PARAMETER[charaId].attacableRange;
   this.move = CHARACTER_PARAMETER[charaId].move;
 }
-test_Daisyo = new character(9,9,1);
+
+test_Friend = [];
+test_Friend[0] = new character(9, 9, 0);
+test_Friend[1] = new character(8, 9, 3);
+test_Friend[2] = new character(10, 9, 3);
+test_Friend[3] = new character(9, 8, 3);
+test_Friend[4] = new character(9, 10, 3);
 
 // Declarations
 var selectX = -1;
@@ -88,8 +94,13 @@ $(function(){
 function redraw(e){
   ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
   drawHoverMarker(e);
+
   //drawCharacter();
-  drawCharacter(test_Daisyo.posx,test_Daisyo.posy,test_Daisyo.id);
+  var i;
+  for (i=0;i<5;i++){
+      drawCharacter(test_Friend[i].posx,test_Friend[i].posy,test_Friend[i].id);
+  }
+
   drawField();
 }
 
@@ -115,8 +126,22 @@ function drawHoverMarker(e){
 
 function drawCharacter(posx,posy,charaId){
   var obj = convertPosition(posx, posy, false);
-  ctxCanvas.beginPath();
-  ctxCanvas.arc(obj.x, obj.y, 10, 0, Math.PI*2);
+  ctxCanvas.font = "18px 'MS Pゴシック'";
+  ctxCanvas.fillStyle = "red";
+  switch(charaId){
+    case 0:
+      ctxCanvas.fillText("D",obj.x, obj.y);
+      break;
+    case 1:
+      ctxCanvas.fillText("P",obj.x, obj.y);
+      break;
+    case 2:
+      ctxCanvas.fillText("H",obj.x, obj.y);
+      break;
+    case 3:
+      ctxCanvas.fillText("M",obj.x, obj.y);
+      break;
+  }
   ctxCanvas.stroke();
 }
 
