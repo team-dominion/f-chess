@@ -2,6 +2,9 @@ var PLAYGROUND_WIDTH = 600;
 var NUMBER_OF_SQUARE = 17;
 var NUMBER_OF_PLAYGROUND_LINE = PLAYGROUND_WIDTH / NUMBER_OF_SQUARE;
 
+//  
+var selectX;
+var selectY;
 
 $(function(){
   /* canvas */
@@ -9,11 +12,14 @@ $(function(){
   ctxCanvas  = playGround.getContext("2d");
 
   // クリック処理
-  var xy = $('#play-ground').position();
+  var canvasPosition = $('#play-ground').position();
 
   $('#play-ground').click(function(e) {
-    var y = e.pageX - xy.left;
-    var x = e.pageY - xy.top;
+    /*
+    (selectY, selectX)
+    */
+    selectY = e.pageX - canvasPosition.left;
+    selectX = e.pageY - canvasPosition.top;
 
 
     console.log(Math.floor(x / NUMBER_OF_PLAYGROUND_LINE) + "," + Math.floor(y / NUMBER_OF_PLAYGROUND_LINE));
