@@ -1,6 +1,7 @@
 var NUMBER_OF_SQUARE = 17;
 var PLAYGROUND_WIDTH = 600;
 var SQUARE_WIDTH = PLAYGROUND_WIDTH / NUMBER_OF_SQUARE;
+var MAX_CHARACTER = 5;
 
 var CHARACTER_PARAMETER = [
   {
@@ -41,11 +42,11 @@ var CHARACTER_PARAMETER = [
   }
 ]
 
-character = function(posx, posy,charaId) {
+character = function(id, posx, posy, charaId) {
   this.posx = posx;
   this.posy = posy;
   this.charaId = charaId;
-  this.id = CHARACTER_PARAMETER[charaId].id;
+  this.id = id;
   this.name = CHARACTER_PARAMETER[charaId].name;
   this.cost = CHARACTER_PARAMETER[charaId].cost;
   this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
@@ -55,15 +56,23 @@ character = function(posx, posy,charaId) {
 }
 
 test_Friend = [];
-test_Friend[0] = new character(9, 9, 0);
-test_Friend[1] = new character(8, 9, 3);
-test_Friend[2] = new character(10, 9, 3);
-test_Friend[3] = new character(9, 8, 3);
-test_Friend[4] = new character(9, 10, 3);
+test_Friend[0] = new character(0, 9, 9, 0);
+test_Friend[1] = new character(1, 8, 9, 3);
+test_Friend[2] = new character(2, 10, 9, 3);
+test_Friend[3] = new character(3, 9, 8, 3);
+test_Friend[4] = new character(4, 9, 10, 3);
+
+test_Enemy = [];
+test_Enemy[0] = new character(100, 3, 3, 0);
+test_Enemy[1] = new character(101, 2, 3, 2);
+test_Enemy[2] = new character(102, 4, 3, 3);
+test_Enemy[3] = new character(103, 3, 2, 1);
+test_Enemy[4] = new character(104, 3, 4, 1);
 
 // Declarations
 var selectX = -1;
 var selectY = -1;
+var selectedCharacter = -1;
 var overX = -1;
 var overY = -1;
 
@@ -86,7 +95,7 @@ $(function(){
   });
 
   /* For Debug */
-  console.log(CHARACTER_PARAMETER[3].name);
+  //console.log(CHARACTER_PARAMETER[3].name);
 
 });
 
@@ -97,8 +106,11 @@ function redraw(e){
 
   //drawCharacter();
   var i;
-  for (i=0;i<5;i++){
-      drawCharacter(test_Friend[i].posx,test_Friend[i].posy,test_Friend[i].id);
+  for (i = 0; i < 5; i++){
+      ctxCanvas.fillStyle = "red";
+      drawCharacter(test_Friend[i].posx, test_Friend[i].posy, test_Friend[i].charaId);
+      ctxCanvas.fillStyle = "blue";
+      drawCharacter(test_Enemy[i].posx, test_Enemy[i].posy, test_Enemy[i].charaId);
   }
 
   drawField();
@@ -127,19 +139,18 @@ function drawHoverMarker(e){
 function drawCharacter(posx,posy,charaId){
   var obj = convertPosition(posx, posy, false);
   ctxCanvas.font = "18px 'MS Pゴシック'";
-  ctxCanvas.fillStyle = "red";
   switch(charaId){
     case 0:
-      ctxCanvas.fillText("D",obj.x, obj.y);
+      ctxCanvas.fillText("D", obj.x, obj.y);
       break;
     case 1:
-      ctxCanvas.fillText("P",obj.x, obj.y);
+      ctxCanvas.fillText("P", obj.x, obj.y);
       break;
     case 2:
-      ctxCanvas.fillText("H",obj.x, obj.y);
+      ctxCanvas.fillText("H", obj.x, obj.y);
       break;
     case 3:
-      ctxCanvas.fillText("M",obj.x, obj.y);
+      ctxCanvas.fillText("M", obj.x, obj.y);
       break;
   }
   ctxCanvas.stroke();
@@ -171,12 +182,61 @@ function selectCharacter(e){
     (selectY, selectX)
     */
     if (e) {
-      selectX = (e.pageX - canvasPosition.left) / SQUARE_WIDTH;
-      selectY = (e.pageY - canvasPosition.top) / SQUARE_WIDTH;
+      selectX = Math.floor((e.pageX - canvasPosition.left) / SQUARE_WIDTH);
+      selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
     };
+    //console.log(selectX, selectY);
 
-    test_Daisyo.posx = selectX;
-    test_Daisyo.posy = selectY;
+    // クリックしたとこのキャラを検索。
+    // 同じキャラが選択されたとき or 見つからなかったとき、-1を代入。
+    var temp = searchCharacter(selectX, selectY, 0);
+    if (selectedCharacter === temp[1] || temp[0] === false) {
+      selectedCharacter = -1;
+    } else {
+      selectedCharacter = temp[1];
+    }
+    console.log('selected', selectedCharacter);
+
+
+    // クリックしたとこを含む、距離が1(隣接する)キャラを検索。
+    var temp = searchCharacter(selectX, selectY, 1);
+    console.log(temp.length - 1 + ' character(s) found.');
+    console.log(temp);
+
+}
+
+function searchCharacter(x, y, range){
+  /*
+    x, y はマスの座標を取る。
+  */
+  var i, j, k;
+  var foundCharacter = [];
+  foundCharacter.push(false);
+
+    x -= range; //検索範囲の一番左のマス
+    y -= range; //検索範囲の一番上のマス
+    range = 2 * range + 1;
+
+    for (i = 0; i < range; i++) {
+      for (j = 0; j < range; j++) {
+        for (k = 0; k < MAX_CHARACTER; k++){
+          if(test_Friend[k].posx === x + i && test_Friend[k].posy === y + j){
+            foundCharacter.push(test_Friend[k].id);
+          }
+          if(test_Enemy[k].posx === x + i && test_Enemy[k].posy === y + j){
+            foundCharacter.push(test_Enemy[k].id);
+          }
+        }
+      }
+    }
+
+  if (typeof foundCharacter[1] === 'undefined') {
+    return foundCharacter;
+  } else {
+    foundCharacter[0] = true;
+    return foundCharacter;
+  }
+
 }
 
 // ==============================================================================================
