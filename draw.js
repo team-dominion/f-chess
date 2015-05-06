@@ -75,6 +75,7 @@ var selectY = -1;
 var selectedCharacter = -1;
 var overX = -1;
 var overY = -1;
+var onFiled = false;
 
 // ==============================================================================================
 $(function(){
@@ -86,10 +87,15 @@ $(function(){
   /* Event */
   $('#play-ground').bind({
     "mousemove": function(e){
-      redraw(e);
+    	onFiled = true;
+      redraw(e, onFiled);
+    },
+    "mouseout": function(e){
+    	onFiled = false;
+    	redraw(e, onFiled);
     },
     "click": function(e){
-      selectCharacter(e);
+      selectCharacter(e, onFiled);
       redraw(e);
     }
   });
@@ -100,9 +106,11 @@ $(function(){
 });
 
 // ==============================================================================================
-function redraw(e){
+function redraw(e, flag){
   ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
-  drawHoverMarker(e);
+  if (flag === true) {
+  	drawHoverMarker(e);
+	}
 
   //drawCharacter();
   var i;
