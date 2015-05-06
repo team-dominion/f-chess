@@ -198,7 +198,7 @@ function selectCharacter(e){
     console.log('selected', selectedCharacter);
 
 
-    // クリックしたとこを含む、距離が1(隣接する)キャラを検索。
+    // クリックしたとこから、距離が1(隣接する)キャラを検索。
     var temp = searchCharacter(selectX, selectY, 1);
     console.log(temp.length - 1 + ' character(s) found.');
     console.log(temp);
