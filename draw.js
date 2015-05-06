@@ -160,11 +160,10 @@ function redraw(e, flag){
 	}
 
   //drawCharacter();
-  var i;
-  for (i = 0; i < 5; i++){
-      ctxCanvas.fillStyle = "red";
-      drawCharacter(test_Friend[i].posx, test_Friend[i].posy, test_Friend[i].charaId);
+  for (var i = 0; i < 5; i++){
       ctxCanvas.fillStyle = "blue";
+      drawCharacter(test_Friend[i].posx, test_Friend[i].posy, test_Friend[i].charaId);
+      ctxCanvas.fillStyle = "red";
       drawCharacter(test_Enemy[i].posx, test_Enemy[i].posy, test_Enemy[i].charaId);
   }
 
@@ -213,12 +212,11 @@ function drawCharacter(posx,posy,charaId){
 
 
 function drawField(){
-  var i;
 
   //setting
   ctxCanvas.globalAlpha = 1.0;
 
-  for (i=0; i<=17;i++) {
+  for (var i = 0; i <= 17; i++) {
     if (i === 0 || i === NUMBER_OF_SQUARE) {
       ctxCanvas.beginPath();
       ctxCanvas.lineWidth = 10.0;
@@ -239,30 +237,29 @@ function drawField(){
 }
 
 function selectCharacter(e){
-    /*
-    (selectY, selectX)
-    */
-    if (e) {
-      selectX = Math.floor((e.pageX - canvasPosition.left) / SQUARE_WIDTH);
-      selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
-    };
-    //console.log(selectX, selectY);
+  /*
+  (selectY, selectX)
+  */
+  if (e) {
+    selectX = Math.floor((e.pageX - canvasPosition.left) / SQUARE_WIDTH);
+    selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
+  };
 
-    // クリックしたとこのキャラを検索。
-    // 同じキャラが選択されたとき or 見つからなかったとき、-1を代入。
-    var temp = searchCharacter(selectX, selectY, 0, true);
-    if (selectedCharacter === temp[1] || temp[0] === false) {
-      selectedCharacter = -1;
-    } else {
-      selectedCharacter = temp[1];
-    }
-    console.log('selected', selectedCharacter);
+  // クリックしたとこのキャラを検索。
+  // 同じキャラが選択されたとき or 見つからなかったとき、-1を代入。
+  var temp = searchCharacter(selectX, selectY, 0, true);
+  if (selectedCharacter === temp[1] || temp[0] === false) {
+    selectedCharacter = -1;
+  } else {
+    selectedCharacter = temp[1];
+  }
 
-    // クリックしたとこ以外の、距離が1(隣接する)キャラを検索。
-    var temp = searchCharacter(selectX, selectY, 1, false);
-    console.log(temp.length - 1 + ' character(s) found.');
-    console.log(temp);
+  var targetCharacter = getCharacterState(selectedCharacter);
+  attack(selectedCharacter);
 
+
+  // クリックしたとこ以外の、距離が1(隣接する)キャラを検索。
+  var temp = searchCharacter(selectX, selectY, 1, false);
 }
 
 function searchCharacter(x, y, range, flag){
@@ -272,17 +269,16 @@ function searchCharacter(x, y, range, flag){
      true: クリックしたところを含む
      false: クリックしたところを含まない
   */
-  var i, j, k;
   var foundCharacter = [];
   foundCharacter.push(false);
 
-    tx = x - range; //検索範囲の一番左のマス
-    ty = y - range; //検索範囲の一番上のマス
-    range = 2 * range + 1;
+    var tx = x - range; //検索範囲の一番左のマス
+    var ty = y - range; //検索範囲の一番上のマス
+    var range = 2 * range + 1;
 
-    for (i = 0; i < range; i++) {
-      for (j = 0; j < range; j++) {
-        for (k = 0; k < MAX_CHARACTER; k++){
+    for (var i = 0; i < range; i++) {
+      for (var j = 0; j < range; j++) {
+        for (var k = 0; k < MAX_CHARACTER; k++){
           if(test_Friend[k].posx === tx + i && test_Friend[k].posy === ty + j){
             foundCharacter.push(test_Friend[k].id);
           }
@@ -295,7 +291,7 @@ function searchCharacter(x, y, range, flag){
 
   if (flag === false) {
     var temp = searchCharacter(x, y, 0, true);
-    for(i = 1; i < foundCharacter.length; i++){
+    for(var i = 1; i <= foundCharacter.length; i++){
       if (foundCharacter[i] === temp[1]){
         foundCharacter.splice(i, 1);
       }
@@ -309,6 +305,55 @@ function searchCharacter(x, y, range, flag){
     return foundCharacter;
   }
 
+}
+
+function getCharacterState(keyId){
+  /*
+    引数にidを取る。（配列不可）
+    マッチしたキャラを返す。
+  */
+  for (var i = 0; i < MAX_CHARACTER; i++) {
+    if (test_Enemy[i].id === keyId) {
+      var result = test_Enemy[i];
+    };
+    if (test_Friend[i].id === keyId) {
+      var result = test_Friend[i];
+    };
+  }
+
+  if (!result) {
+    return false;
+  } else {
+    return result;
+  }
+}
+// ==============================================================================================
+function attack(attakerId){
+  var attaker = getCharacterState(attakerId);
+  var defender = searchCharacter(attaker.posx, attaker.posy, attaker.attacableRange, false);
+
+  // 味方のIDをdefenderリストから削除
+  if (attakerId < 100) {
+    for(var i = defender.length; i > 0; i--){
+      if (defender[i] < 100){
+        defender.splice(i, 1);
+      }
+    }
+  } else {
+    for(var i = defender.length; i > 0; i--){
+      if (defender[i] >= 100){
+        defender.splice(i, 1);
+      }
+    }
+  }
+
+  // 攻撃
+  for (var i = 1; i <= defender.length; i++) {
+    getCharacterState(defender[i]).hitPoint -= attaker.attack;
+    if (getCharacterState(defender[i]).hitPoint <= 0) {
+      console.log('dead');
+    };
+  };
 }
 
 // ==============================================================================================
