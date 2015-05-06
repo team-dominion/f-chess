@@ -189,7 +189,7 @@ function selectCharacter(e){
 
     // クリックしたとこのキャラを検索。
     // 同じキャラが選択されたとき or 見つからなかったとき、-1を代入。
-    var temp = searchCharacter(selectX, selectY, 0);
+    var temp = searchCharacter(selectX, selectY, 0, true);
     if (selectedCharacter === temp[1] || temp[0] === false) {
       selectedCharacter = -1;
     } else {
@@ -197,38 +197,49 @@ function selectCharacter(e){
     }
     console.log('selected', selectedCharacter);
 
-
-    // クリックしたとこから、距離が1(隣接する)キャラを検索。
-    var temp = searchCharacter(selectX, selectY, 1);
+    // クリックしたとこ以外の、距離が1(隣接する)キャラを検索。
+    var temp = searchCharacter(selectX, selectY, 1, false);
     console.log(temp.length - 1 + ' character(s) found.');
     console.log(temp);
 
 }
 
-function searchCharacter(x, y, range){
+function searchCharacter(x, y, range, flag){
   /*
     x, y はマスの座標を取る。
+    flag:
+     true: クリックしたところを含む
+     false: クリックしたところを含まない
   */
   var i, j, k;
   var foundCharacter = [];
   foundCharacter.push(false);
 
-    x -= range; //検索範囲の一番左のマス
-    y -= range; //検索範囲の一番上のマス
+    tx = x - range; //検索範囲の一番左のマス
+    ty = y - range; //検索範囲の一番上のマス
     range = 2 * range + 1;
 
     for (i = 0; i < range; i++) {
       for (j = 0; j < range; j++) {
         for (k = 0; k < MAX_CHARACTER; k++){
-          if(test_Friend[k].posx === x + i && test_Friend[k].posy === y + j){
+          if(test_Friend[k].posx === tx + i && test_Friend[k].posy === ty + j){
             foundCharacter.push(test_Friend[k].id);
           }
-          if(test_Enemy[k].posx === x + i && test_Enemy[k].posy === y + j){
+          if(test_Enemy[k].posx === tx + i && test_Enemy[k].posy === ty + j){
             foundCharacter.push(test_Enemy[k].id);
           }
         }
       }
     }
+
+  if (flag === false) {
+    var temp = searchCharacter(x, y, 0, true);
+    for(i = 1; i < foundCharacter.length; i++){
+      if (foundCharacter[i] === temp[1]){
+        foundCharacter.splice(i, 1);
+      }
+    }
+  }
 
   if (typeof foundCharacter[1] === 'undefined') {
     return foundCharacter;
