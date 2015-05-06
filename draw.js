@@ -113,7 +113,7 @@ function redraw(e){
       drawCharacter(test_Enemy[i].posx, test_Enemy[i].posy, test_Enemy[i].charaId);
   }
 
-  drawField();
+  drawField();  
 }
 
 function drawHoverMarker(e){
@@ -159,6 +159,8 @@ function drawCharacter(posx,posy,charaId){
 function drawField(){
   var i;
 
+  //setting
+  ctxCanvas.globalAlpha = 1.0;
   for (i=0; i<=17;i++) {
     if (i === 0 || i === NUMBER_OF_SQUARE) {
       ctxCanvas.beginPath();
@@ -167,6 +169,8 @@ function drawField(){
       ctxCanvas.beginPath();
       ctxCanvas.lineWidth = 1.0;
     }
+
+    //draw
     ctxCanvas.moveTo(i * SQUARE_WIDTH, 0);
     ctxCanvas.lineTo(i * SQUARE_WIDTH, PLAYGROUND_WIDTH);
     ctxCanvas.stroke();
