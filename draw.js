@@ -123,6 +123,7 @@ var selectedCharacter = -1;
 var overX = -1;
 var overY = -1;
 var onFiled = false;
+var moveFlg = -1;
 
 // ==============================================================================================
 $(function(){
@@ -148,7 +149,7 @@ $(function(){
   });
 
   /* For Debug */
-  //console.log(CHARACTER_PARAMETER[3].name);
+  console.log(CHARACTER_PARAMETER[3].name);
 
 });
 
@@ -253,13 +254,24 @@ function selectCharacter(e){
   } else {
     selectedCharacter = temp[1];
   }
+  
+  if (moveFlg <100 && moveFlg != -1 && temp[0]== false){
+    test_Friend[moveFlg].posx = selectX;
+    test_Friend[moveFlg].posy = selectY;
+  }
+
+  if (selectedCharacter < 100 && selectedCharacter != -1){
+    moveFlg = selectedCharacter;
+  } else {
+    moveFlg = -1;
+  }
 
   var targetCharacter = getCharacterState(selectedCharacter);
   attack(selectedCharacter);
 
 
   // クリックしたとこ以外の、距離が1(隣接する)キャラを検索。
-  var temp = searchCharacter(selectX, selectY, 1, false);
+  temp = searchCharacter(selectX, selectY, 1, false);
 }
 
 function searchCharacter(x, y, range, flag){
