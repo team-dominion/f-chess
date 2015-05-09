@@ -69,41 +69,6 @@ test_Enemy[2] = new character(102, 4, 3, 3);
 test_Enemy[3] = new character(103, 3, 2, 1);
 test_Enemy[4] = new character(104, 3, 4, 1);
 
-var CHARACTER_PARAMETER = [
-  {
-    "name": "daisyo",
-    "cost": 1,
-    "hitPoint": 3,
-    "attack": 1,
-    "attacableRange": 2,
-    "move": 1
-  },
-  {
-    "name": "pupepon",
-    "cost": 3,
-    "hitPoint": 7,
-    "attack": 3,
-    "attacableRange": 2,
-    "move": 3
-  },
-  {
-    "name": "haseaki",
-    "cost": 2,
-    "hitPoint": 3,
-    "attack": 2,
-    "attacableRange": 2,
-    "move": 2
-  },
-  {
-    "name": "miho",
-    "cost": 5,
-    "hitPoint": 8,
-    "attack": 3,
-    "attacableRange": 2,
-    "move": 2
-  }
-]
-
 character = function(posx, posy,charaId) {
   this.posx = posx;
   this.posy = posy;
