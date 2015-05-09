@@ -69,18 +69,6 @@ test_Enemy[2] = new character(102, 4, 3, 3);
 test_Enemy[3] = new character(103, 3, 2, 1);
 test_Enemy[4] = new character(104, 3, 4, 1);
 
-character = function(posx, posy,charaId) {
-  this.posx = posx;
-  this.posy = posy;
-  this.charaId = charaId;
-  this.name = CHARACTER_PARAMETER[charaId].name;
-  this.cost = CHARACTER_PARAMETER[charaId].cost;
-  this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
-  this.attack = CHARACTER_PARAMETER[charaId].attack;
-  this.attacableRange = CHARACTER_PARAMETER[charaId].attacableRange;
-  this.move = CHARACTER_PARAMETER[charaId].move;
-}
-
 // Declarations
 var selectX = -1;
 var selectY = -1;
@@ -160,6 +148,8 @@ function drawHoverMarker(e){
 function drawCharacter(posx,posy,charaId){
   var obj = convertPosition(posx, posy, false);
   ctxCanvas.font = "18px 'MS Pゴシック'";
+  ctxCanvas.globalAlpha = 1.0;
+
   switch(charaId){
     case 0:
       ctxCanvas.fillText("D", obj.x, obj.y);
