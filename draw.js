@@ -255,11 +255,7 @@ function selectCharacter(e){
     selectedCharacter = temp[1];
   }
   
-  //前回味方が選択され、何もない又は自機の場所が選択されると移動する
-  // if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
-  //   test_Friend[moveFlg].posx = selectX;
-  //   test_Friend[moveFlg].posy = selectY;
-  // }
+  //前回味方が選択された状態で、何もない又は自機の場所が選択されたら
   if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
     moveCharacter(selectX,selectY,moveFlg);
   }
@@ -280,13 +276,14 @@ function selectCharacter(e){
 
 function moveCharacter(x,y,charaId){
 
-  var lx,ly,renge;
-
+  var lx,ly;
 
   lx = test_Friend[charaId].posx;
+
+  
   ly = test_Friend[charaId].posy;
 
-
+  //x,yが移動範囲内なら
   if(Math.abs(x-lx) + Math.abs(y-ly) <= test_Friend[charaId].move){
   test_Friend[charaId].posx = x;
   test_Friend[charaId].posy = y;
