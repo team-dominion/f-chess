@@ -38,7 +38,7 @@ var CHARACTER_PARAMETER = [
     "hitPoint": 8,
     "attack": 3,
     "attacableRange": 2,
-    "move": 2
+    "move": 5
   }
 ]
 
@@ -89,6 +89,7 @@ var overX = -1;
 var overY = -1;
 var onFiled = false;
 var moveFlg = -1;
+var turn = 'friend';
 
 // ==============================================================================================
 $(function(){
@@ -219,39 +220,45 @@ function selectCharacter(e){
   } else {
     selectedCharacter = temp[1];
   }
-  
-  moveCharacter(selectX,selectY,moveFlg);
 
-  if (selectedCharacter < 100 && selectedCharacter != -1){
-    moveFlg = selectedCharacter;
-  } else {
-    moveFlg = -1;
-  }
+  moveCharacter(selectX, selectY);
 
-  var targetCharacter = getCharacterState(selectedCharacter);
-  attack(selectedCharacter);
-
-
-  // クリックしたとこ以外の、距離が1(隣接する)キャラを検索。
-  temp = searchCharacter(selectX, selectY, 1, false);
 }
 
-function moveCharacter(x,y,charaId){
-  //前回味方が選択された状態で、何もない又は自機の場所が選択されたら
-  if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
-    var lx,ly;
+function moveCharacter(x, y){
 
-    lx = test_Friend[charaId].posx;
-    ly = test_Friend[charaId].posy;
+  var characterId = selectedCharacter;
+  var characterState = getCharacterState(moveFlg);
+  var lx = characterState.posx;
+  var ly = characterState.posy;
 
-    //x,yが移動範囲内なら
-    if(Math.abs(x-lx) + Math.abs(y-ly) <= test_Friend[charaId].move){
-    test_Friend[charaId].posx = x;
-    test_Friend[charaId].posy = y;
-    }else{
-      console.log("This postion protruding from moverenge")
-    }
-  }
+  console.log(moveFlg, selectedCharacter);
+  console.log(characterState);
+
+  if (moveFlg === -1) {
+    moveFlg = characterId;
+  } else {
+    if (characterId != -1 || Math.abs(x - lx) + Math.abs(y - ly) > characterState.move) {
+      //範囲外
+      console.log("This postion protruding from moverenge");
+    } else {
+      //移動
+      if (turn == 'friend') {
+        if (moveFlg < 100) {
+          characterState.posx = x;
+          characterState.posy = y;
+        }
+      };
+      if (turn == 'enemy') {
+        if (moveFlg >= 100) {
+          characterState.posx = x;
+          characterState.posy = y;
+        }
+      };
+
+      moveFlg = -1;
+    };
+  };
 
 }
 
