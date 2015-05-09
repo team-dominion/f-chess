@@ -255,9 +255,13 @@ function selectCharacter(e){
     selectedCharacter = temp[1];
   }
   
-  if (moveFlg <100 && moveFlg != -1 && temp[0]== false){
-    test_Friend[moveFlg].posx = selectX;
-    test_Friend[moveFlg].posy = selectY;
+  //前回味方が選択され、何もない又は自機の場所が選択されると移動する
+  // if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
+  //   test_Friend[moveFlg].posx = selectX;
+  //   test_Friend[moveFlg].posy = selectY;
+  // }
+  if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
+    moveCharacter(selectX,selectY,moveFlg);
   }
 
   if (selectedCharacter < 100 && selectedCharacter != -1){
@@ -272,6 +276,24 @@ function selectCharacter(e){
 
   // クリックしたとこ以外の、距離が1(隣接する)キャラを検索。
   temp = searchCharacter(selectX, selectY, 1, false);
+}
+
+function moveCharacter(x,y,charaId){
+
+  var lx,ly,renge;
+
+
+  lx = test_Friend[charaId].posx;
+  ly = test_Friend[charaId].posy;
+
+
+  if(Math.abs(x-lx) + Math.abs(y-ly) <= test_Friend[charaId].move){
+  test_Friend[charaId].posx = x;
+  test_Friend[charaId].posy = y;
+  }else{
+    console.log("This postion protruding from moverenge")
+  }
+
 }
 
 function searchCharacter(x, y, range, flag){
@@ -358,7 +380,6 @@ function attack(attakerId){
       }
     }
   }
-
   // 攻撃
   for (var i = 1; i <= defender.length; i++) {
     getCharacterState(defender[i]).hitPoint -= attaker.attack;
