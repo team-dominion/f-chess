@@ -255,10 +255,7 @@ function selectCharacter(e){
     selectedCharacter = temp[1];
   }
   
-  //前回味方が選択された状態で、何もない又は自機の場所が選択されたら
-  if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
-    moveCharacter(selectX,selectY,moveFlg);
-  }
+  moveCharacter(selectX,selectY,moveFlg);
 
   if (selectedCharacter < 100 && selectedCharacter != -1){
     moveFlg = selectedCharacter;
@@ -275,20 +272,20 @@ function selectCharacter(e){
 }
 
 function moveCharacter(x,y,charaId){
+  //前回味方が選択された状態で、何もない又は自機の場所が選択されたら
+  if (moveFlg <100 && moveFlg != -1 && selectedCharacter== -1){
+    var lx,ly;
 
-  var lx,ly;
+    lx = test_Friend[charaId].posx;
+    ly = test_Friend[charaId].posy;
 
-  lx = test_Friend[charaId].posx;
-
-  
-  ly = test_Friend[charaId].posy;
-
-  //x,yが移動範囲内なら
-  if(Math.abs(x-lx) + Math.abs(y-ly) <= test_Friend[charaId].move){
-  test_Friend[charaId].posx = x;
-  test_Friend[charaId].posy = y;
-  }else{
-    console.log("This postion protruding from moverenge")
+    //x,yが移動範囲内なら
+    if(Math.abs(x-lx) + Math.abs(y-ly) <= test_Friend[charaId].move){
+    test_Friend[charaId].posx = x;
+    test_Friend[charaId].posy = y;
+    }else{
+      console.log("This postion protruding from moverenge")
+    }
   }
 
 }
