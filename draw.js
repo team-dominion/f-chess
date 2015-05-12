@@ -148,6 +148,8 @@ function drawHoverMarker(e){
 function drawCharacter(posx,posy,charaId){
   var obj = convertPosition(posx, posy, false);
   ctxCanvas.font = "18px 'MS Pゴシック'";
+  ctxCanvas.globalAlpha = 1.0;
+
   switch(charaId){
     case 0:
       ctxCanvas.fillText("D", obj.x, obj.y);
