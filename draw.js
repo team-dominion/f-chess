@@ -138,7 +138,7 @@ function drawHoverMarker(e){
     };
 
     ctxCanvas.lineWidth = 0.0;
-    ctxCanvas.fillStyle = 'rgb(192, 80, 77)';
+    ctxCanvas.fillStyle = 'rgb(120, 200, 77)';
     ctxCanvas.globalAlpha = 0.7;
     ctxCanvas.beginPath();
     ctxCanvas.fillRect(obj.x, obj.y, SQUARE_WIDTH, SQUARE_WIDTH);
