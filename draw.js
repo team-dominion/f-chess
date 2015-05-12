@@ -233,6 +233,7 @@ function moveCharacter(x, y){
     if (characterId != -1 || Math.abs(x - lx) + Math.abs(y - ly) > characterState.move) {
       //範囲外
       console.log("This postion protruding from moverenge");
+      moveFlg = -1;
     } else {
       //移動
       if (turn === 'friend') {
