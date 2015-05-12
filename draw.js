@@ -87,6 +87,21 @@ $(function(){
   ctxCanvas  = playGround.getContext("2d");
   canvasPosition = $('#play-ground').position();
 
+  redraw(false, onFiled);
+
+  /* resize */
+  var timer = false;
+  $(window).resize(function() {
+    if (timer !== false) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+    console.log("resize Event");
+    // 処理
+    canvasPosition = $('#play-ground').position();
+    }, 200);
+  });
+
   /* Event */
   $('#play-ground').bind({
     "mousemove": function(e){
@@ -98,8 +113,8 @@ $(function(){
     	redraw(e, onFiled);
     },
     "click": function(e){
-      selectCharacter(e, onFiled);
-      redraw(e);
+      selectCharacter(e);
+      redraw(e, onFiled);
     }
   });
 
@@ -111,7 +126,7 @@ $(function(){
 // ==============================================================================================
 function redraw(e, flag){
   ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
-  if (flag === true) {
+  if (e && flag === true) {
     drawHoverMarker(e);
   }
 
@@ -122,7 +137,7 @@ function redraw(e, flag){
       drawCharacter(test_Enemy[i].posx, test_Enemy[i].posy, test_Enemy[i].charaId);
   }
 
-  drawField();  
+  drawField();
 }
 
 function drawHoverMarker(e){
@@ -145,25 +160,13 @@ function drawHoverMarker(e){
     ctxCanvas.stroke();
 }
 
-function drawCharacter(posx,posy,charaId){
-  var obj = convertPosition(posx, posy, false);
-  ctxCanvas.font = "18px 'MS Pゴシック'";
+function drawCharacter(posX ,posY, charId){
+	/* Draw Set */
+	var typeArray = ['D','P','H','M'];
+  var obj = convertPosition(posX, posY, false);
   ctxCanvas.globalAlpha = 1.0;
-
-  switch(charaId){
-    case 0:
-      ctxCanvas.fillText("D", obj.x, obj.y);
-      break;
-    case 1:
-      ctxCanvas.fillText("P", obj.x, obj.y);
-      break;
-    case 2:
-      ctxCanvas.fillText("H", obj.x, obj.y);
-      break;
-    case 3:
-      ctxCanvas.fillText("M", obj.x, obj.y);
-      break;
-  }
+  ctxCanvas.font = "18px 'MS Pゴシック'";
+  ctxCanvas.fillText(typeArray[charId], obj.x, obj.y);
   ctxCanvas.stroke();
 }
 
@@ -185,7 +188,8 @@ function drawField(){
     //draw
     ctxCanvas.moveTo(i * SQUARE_WIDTH, 0);
     ctxCanvas.lineTo(i * SQUARE_WIDTH, PLAYGROUND_WIDTH);
-    ctxCanvas.stroke();
+    /* ここない方がきれいに描画できてると思う */
+    //ctxCanvas.stroke();
     ctxCanvas.moveTo(0, i * SQUARE_WIDTH);
     ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * SQUARE_WIDTH);
     ctxCanvas.stroke();
