@@ -80,7 +80,8 @@ var onFiled = false;
 var moveFlg = -1;
 var turn = 'friend';
 
-// ==============================================================================================
+// =======================================
+//=======================================================
 $(function(){
   /* canvas */
   playGround = $("#play-ground").get(0);
@@ -140,6 +141,11 @@ function redraw(e, flag){
   drawField();
 }
 
+//マスを塗りつぶす
+function drawSquare(x,y){
+
+}
+
 function drawHoverMarker(e){
     if (!e) {
       console.log("drawHoverMarker !e");
@@ -194,7 +200,32 @@ function drawField(){
     ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * SQUARE_WIDTH);
     ctxCanvas.stroke();
   }
+}
 
+function drawRange(x,y){
+  var i,j;
+  var state = getCharacterState(selectedCharacter);
+  //console.log(state);
+  var move = state.move;
+  var attack = state.attacableRange;
+
+  //範囲内マスの座標は取れたけど、それを塗りつぶすのが出来てない(drawSquare)
+  
+  if(selectedCharacter !== -1){
+    for (i = -1*move; i < move+1;i++){
+        //console.log(i,move*2+1-Math.abs(i)*2);
+      for(j = 0;j < move*2+1-Math.abs(i)*2; j++){
+        if(j%2 == 0){
+          console.log(j/2+x,i+y);
+          drawSquare(j/2+x,i+y);
+        }
+        else{
+          console.log(Math.ceil(j/2)*-1+x,i+y);
+          drawSquare(Math.ceil(j/2)*-1+x,i+y);
+        }
+      }
+    }
+  }
 }
 
 function selectCharacter(e){
@@ -215,6 +246,7 @@ function selectCharacter(e){
     selectedCharacter = temp[1];
   }
 
+  drawRange(selectX,selectY);
   moveCharacter(selectX, selectY);
 
   console.log('selected', selectedCharacter);
