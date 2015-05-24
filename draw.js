@@ -79,6 +79,7 @@ var overY = -1;
 var onFiled = false;
 var moveFlg = -1;
 var turn = 'friend';
+var selectCharacterState = false;
 
 // =======================================
 //=======================================================
@@ -137,13 +138,25 @@ function redraw(e, flag){
       ctxCanvas.fillStyle = "red";
       drawCharacter(test_Enemy[i].posx, test_Enemy[i].posy, test_Enemy[i].charaId);
   }
-
+  if (e.type === "click"){
+    selectX = Math.floor((e.pageX - canvasPosition.left) / SQUARE_WIDTH);
+    selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
+  }
+  drawRange(selectCharacterState.move,selectX,selectY,0,144,255);
+  drawRange(selectCharacterState.attacableRange,selectX,selectY,200,20,0);
   drawField();
 }
 
 //マスを塗りつぶす
-function drawSquare(x,y){
-
+function drawSquare(x,y,r,g,b){
+  //convertpositionで取った座標17ずつずれてる。
+  obj = convertPosition(x,y,false);
+  ctxCanvas.lineWidth = 0.0;
+  ctxCanvas.fillStyle = "rgb("+r+","+g+","+b+")";
+  ctxCanvas.globalAlpha = 0.5;
+  ctxCanvas.beginPath();
+  ctxCanvas.fillRect(obj.x-17, obj.y-17, SQUARE_WIDTH, SQUARE_WIDTH);
+  ctxCanvas.stroke();
 }
 
 function drawHoverMarker(e){
@@ -202,26 +215,23 @@ function drawField(){
   }
 }
 
-function drawRange(x,y){
+function drawRange(range,x,y,r,g,b){
   var i,j;
   var state = getCharacterState(selectedCharacter);
   //console.log(state);
-  var move = state.move;
-  var attack = state.attacableRange;
-
   //範囲内マスの座標は取れたけど、それを塗りつぶすのが出来てない(drawSquare)
-  
+
   if(selectedCharacter !== -1){
-    for (i = -1*move; i < move+1;i++){
+    for (i = -1*range; i < range+1;i++){
         //console.log(i,move*2+1-Math.abs(i)*2);
-      for(j = 0;j < move*2+1-Math.abs(i)*2; j++){
+      for(j = 0;j < range*2+1-Math.abs(i)*2; j++){
         if(j%2 == 0){
-          console.log(j/2+x,i+y);
-          drawSquare(j/2+x,i+y);
+          //console.log(j/2+x,i+y);
+          drawSquare(j/2+x,i+y,r,g,b);
         }
         else{
-          console.log(Math.ceil(j/2)*-1+x,i+y);
-          drawSquare(Math.ceil(j/2)*-1+x,i+y);
+          //console.log(Math.ceil(j/2)*-1+x,i+y);
+          drawSquare(Math.ceil(j/2)*-1+x,i+y,r,g,b);
         }
       }
     }
@@ -246,9 +256,8 @@ function selectCharacter(e){
     selectedCharacter = temp[1];
   }
 
-  drawRange(selectX,selectY);
   moveCharacter(selectX, selectY);
-
+  selectCharacterState = getCharacterState(selectedCharacter);
   console.log('selected', selectedCharacter);
 
 }
