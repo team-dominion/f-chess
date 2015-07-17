@@ -1,1 +1,3 @@
-# f-syogi
+# f-chess 
+http://fsho.team-dominion.com/
+ 
