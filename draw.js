@@ -10,7 +10,7 @@ var CHARACTER_PARAMETER = [
     "cost": 1,
     "hitPoint": 3,
     "attack": 1,
-    "attacableRange": 2,
+    "attackableRange": 2,
     "move": 1
   },
   {
@@ -19,7 +19,7 @@ var CHARACTER_PARAMETER = [
     "cost": 3,
     "hitPoint": 7,
     "attack": 3,
-    "attacableRange": 2,
+    "attackableRange": 2,
     "move": 3
   },
   {
@@ -28,7 +28,7 @@ var CHARACTER_PARAMETER = [
     "cost": 2,
     "hitPoint": 3,
     "attack": 2,
-    "attacableRange": 2,
+    "attackableRange": 2,
     "move": 2
   },
   {
@@ -37,7 +37,7 @@ var CHARACTER_PARAMETER = [
     "cost": 5,
     "hitPoint": 8,
     "attack": 3,
-    "attacableRange": 2,
+    "attackableRange": 2,
     "move": 5
   }
 ]
@@ -51,7 +51,7 @@ character = function(id, posx, posy, charaId) {
   this.cost = CHARACTER_PARAMETER[charaId].cost;
   this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
   this.attack = CHARACTER_PARAMETER[charaId].attack;
-  this.attacableRange = CHARACTER_PARAMETER[charaId].attacableRange;
+  this.attackableRange = CHARACTER_PARAMETER[charaId].attackableRange;
   this.move = CHARACTER_PARAMETER[charaId].move;
 }
 
@@ -143,7 +143,7 @@ function redraw(e, flag){
     selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
   }
   drawRange(selectCharacterState.move,selectX,selectY,0,144,255);
-  drawRange(selectCharacterState.attacableRange,selectX,selectY,200,20,0);
+  drawRange(selectCharacterState.attackableRange,selectX,selectY,200,20,0);
   drawField();
 }
 
@@ -391,12 +391,12 @@ function getCharacterState(keyId){
   }
 }
 // ==============================================================================================
-function attack(attakerId){
-  var attaker = getCharacterState(attakerId);
-  var defender = searchCharacter(attaker.posx, attaker.posy, attaker.attacableRange, false);
+function attack(attackerId){
+  var attacker = getCharacterState(attackerId);
+  var defender = searchCharacter(attacker.posx, attacker.posy, attacker.attackableRange, false);
 
   // 味方のIDをdefenderリストから削除
-  if (attakerId < 100) {
+  if (attackerId < 100) {
     for(var i = defender.length; i > 0; i--){
       if (defender[i] < 100){
         defender.splice(i, 1);
@@ -411,7 +411,7 @@ function attack(attakerId){
   }
   // 攻撃
   for (var i = 1; i <= defender.length; i++) {
-    getCharacterState(defender[i]).hitPoint -= attaker.attack;
+    getCharacterState(defender[i]).hitPoint -= attacker.attack;
     if (getCharacterState(defender[i]).hitPoint <= 0) {
       console.log('dead');
     };
