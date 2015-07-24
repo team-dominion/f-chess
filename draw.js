@@ -79,13 +79,30 @@ var overY = -1;
 var onFiled = false;
 var moveFlg = -1;
 var turn = 'friend';
+var selectCharacterState = false;
 
-// ==============================================================================================
+// =======================================
+//=======================================================
 $(function(){
   /* canvas */
   playGround = $("#play-ground").get(0);
   ctxCanvas  = playGround.getContext("2d");
   canvasPosition = $('#play-ground').position();
+
+  redraw(false, onFiled);
+
+  /* resize */
+  var timer = false;
+  $(window).resize(function() {
+    if (timer !== false) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+    console.log("resize Event");
+    // 処理
+    canvasPosition = $('#play-ground').position();
+    }, 200);
+  });
 
   /* Event */
   $('#play-ground').bind({
@@ -98,8 +115,8 @@ $(function(){
     	redraw(e, onFiled);
     },
     "click": function(e){
-      selectCharacter(e, onFiled);
-      redraw(e);
+      selectCharacter(e);
+      redraw(e, onFiled);
     }
   });
 
@@ -111,7 +128,7 @@ $(function(){
 // ==============================================================================================
 function redraw(e, flag){
   ctxCanvas.clearRect(0, 0, PLAYGROUND_WIDTH, PLAYGROUND_WIDTH);
-  if (flag === true) {
+  if (e && flag === true) {
     drawHoverMarker(e);
   }
 
@@ -121,8 +138,25 @@ function redraw(e, flag){
       ctxCanvas.fillStyle = "red";
       drawCharacter(test_Enemy[i].posx, test_Enemy[i].posy, test_Enemy[i].charaId);
   }
+  if (e.type === "click"){
+    selectX = Math.floor((e.pageX - canvasPosition.left) / SQUARE_WIDTH);
+    selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
+  }
+  drawRange(selectCharacterState.move,selectX,selectY,0,144,255);
+  drawRange(selectCharacterState.attacableRange,selectX,selectY,200,20,0);
+  drawField();
+}
 
-  drawField();  
+//マスを塗りつぶす
+function drawSquare(x,y,r,g,b){
+  //convertpositionで取った座標17ずつずれてる。
+  obj = convertPosition(x,y,false);
+  ctxCanvas.lineWidth = 0.0;
+  ctxCanvas.fillStyle = "rgb("+r+","+g+","+b+")";
+  ctxCanvas.globalAlpha = 0.5;
+  ctxCanvas.beginPath();
+  ctxCanvas.fillRect(obj.x-17, obj.y-17, SQUARE_WIDTH, SQUARE_WIDTH);
+  ctxCanvas.stroke();
 }
 
 function drawHoverMarker(e){
@@ -145,25 +179,13 @@ function drawHoverMarker(e){
     ctxCanvas.stroke();
 }
 
-function drawCharacter(posx,posy,charaId){
-  var obj = convertPosition(posx, posy, false);
-  ctxCanvas.font = "18px 'MS Pゴシック'";
+function drawCharacter(posX ,posY, charId){
+	/* Draw Set */
+	var typeArray = ['D','P','H','M'];
+  var obj = convertPosition(posX, posY, false);
   ctxCanvas.globalAlpha = 1.0;
-
-  switch(charaId){
-    case 0:
-      ctxCanvas.fillText("D", obj.x, obj.y);
-      break;
-    case 1:
-      ctxCanvas.fillText("P", obj.x, obj.y);
-      break;
-    case 2:
-      ctxCanvas.fillText("H", obj.x, obj.y);
-      break;
-    case 3:
-      ctxCanvas.fillText("M", obj.x, obj.y);
-      break;
-  }
+  ctxCanvas.font = "18px 'MS Pゴシック'";
+  ctxCanvas.fillText(typeArray[charId], obj.x, obj.y);
   ctxCanvas.stroke();
 }
 
@@ -185,12 +207,35 @@ function drawField(){
     //draw
     ctxCanvas.moveTo(i * SQUARE_WIDTH, 0);
     ctxCanvas.lineTo(i * SQUARE_WIDTH, PLAYGROUND_WIDTH);
-    ctxCanvas.stroke();
+    /* ここない方がきれいに描画できてると思う */
+    //ctxCanvas.stroke();
     ctxCanvas.moveTo(0, i * SQUARE_WIDTH);
     ctxCanvas.lineTo(PLAYGROUND_WIDTH, i * SQUARE_WIDTH);
     ctxCanvas.stroke();
   }
+}
 
+function drawRange(range,x,y,r,g,b){
+  var i,j;
+  var state = getCharacterState(selectedCharacter);
+  //console.log(state);
+  //範囲内マスの座標は取れたけど、それを塗りつぶすのが出来てない(drawSquare)
+
+  if(selectedCharacter !== -1){
+    for (i = -1*range; i < range+1;i++){
+        //console.log(i,move*2+1-Math.abs(i)*2);
+      for(j = 0;j < range*2+1-Math.abs(i)*2; j++){
+        if(j%2 == 0){
+          //console.log(j/2+x,i+y);
+          drawSquare(j/2+x,i+y,r,g,b);
+        }
+        else{
+          //console.log(Math.ceil(j/2)*-1+x,i+y);
+          drawSquare(Math.ceil(j/2)*-1+x,i+y,r,g,b);
+        }
+      }
+    }
+  }
 }
 
 function selectCharacter(e){
@@ -212,7 +257,7 @@ function selectCharacter(e){
   }
 
   moveCharacter(selectX, selectY);
-
+  selectCharacterState = getCharacterState(selectedCharacter);
   console.log('selected', selectedCharacter);
 
 }
