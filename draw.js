@@ -91,6 +91,7 @@ $(function(){
   canvasPosition = $('#play-ground').position();
 
   redraw(false, onFiled);
+  rewriteStatus();
 
   /* resize */
   var timer = false;
@@ -136,9 +137,11 @@ $(function(){
           }
         }
         console.log("turn " + turn);
+        rewriteStatus();
       }
     }
   });
+
   /* For Debug */
   console.log(CHARACTER_PARAMETER[3].name);
 
@@ -255,6 +258,11 @@ function drawRange(range,x,y,r,g,b){
       }
     }
   }
+}
+
+function rewriteStatus(){
+  var statusBar = $('#status-bar > p');
+  statusBar.children('span.turn').text(turn);
 }
 
 function selectCharacter(e){
@@ -447,7 +455,7 @@ function attack(attackerId){
   posY: y座標,
   flag:
     true : 座標 -> マス
-    false: マス   -> 座標 
+    false: マス   -> 座標
 */
 function convertPosition(posX, posY, flag) {
   var canvasPosition = $('#play-ground').position();
