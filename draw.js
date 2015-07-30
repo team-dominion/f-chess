@@ -47,6 +47,7 @@ character = function(id, posx, posy, charaId) {
   this.posy = posy;
   this.charaId = charaId;
   this.id = id;
+  this.movable = true;
   this.name = CHARACTER_PARAMETER[charaId].name;
   this.cost = CHARACTER_PARAMETER[charaId].cost;
   this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
@@ -90,6 +91,7 @@ $(function(){
   canvasPosition = $('#play-ground').position();
 
   redraw(false, onFiled);
+  rewriteStatus();
 
   /* resize */
   var timer = false;
@@ -117,6 +119,26 @@ $(function(){
     "click": function(e){
       selectCharacter(e);
       redraw(e, onFiled);
+    }
+  });
+
+  $(window).bind({
+    "keydown" : function(e) {
+      if(e.keyCode === 32){
+        if(turn === "friend"){
+          turn = "enemy";
+          for(var i=0; i<test_Enemy.length; i++){
+            test_Enemy[i].movable = true;
+          }
+        }else if (turn === "enemy"){
+          turn = "friend"
+          for(var i=0; i<test_Friend.length; i++){
+            test_Friend[i].movable = true;
+          }
+        }
+        console.log("turn " + turn);
+        rewriteStatus();
+      }
     }
   });
 
@@ -238,6 +260,11 @@ function drawRange(range,x,y,r,g,b){
   }
 }
 
+function rewriteStatus(){
+  var statusBar = $('#status-bar > p');
+  statusBar.children('span.turn').text(turn);
+}
+
 function selectCharacter(e){
   /*
   (selectY, selectX)
@@ -279,8 +306,9 @@ function moveCharacter(x, y){
       //範囲外
       console.log("This postion protruding from moverenge");
       moveFlg = -1;
-    } else {
+    } else if(characterState.movable === true){
       //移動
+      console.log(characterState.movable);
       if (turn === 'friend') {
         if (moveFlg < 100) {
           characterState.posx = x;
@@ -293,11 +321,11 @@ function moveCharacter(x, y){
           characterState.posy = y;
         }
       };
-
       moveFlg = -1;
+      characterState.movable = false;
+      attack(characterState.id);
     };
   };
-
 }
 
 function searchCharacter(x, y, range, flag){
@@ -414,6 +442,9 @@ function attack(attackerId){
     getCharacterState(defender[i]).hitPoint -= attacker.attack;
     if (getCharacterState(defender[i]).hitPoint <= 0) {
       console.log('dead');
+      getCharacterState(defender[i]).posx = -1;
+      getCharacterState(defender[i]).posy = -1;
+
     };
   };
 }
@@ -424,7 +455,7 @@ function attack(attackerId){
   posY: y座標,
   flag:
     true : 座標 -> マス
-    false: マス   -> 座標 
+    false: マス   -> 座標
 */
 function convertPosition(posX, posY, flag) {
   var canvasPosition = $('#play-ground').position();
