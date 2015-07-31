@@ -3,20 +3,92 @@
 <head>
   <meta charset="utf-8">
   <title>F-JChess</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="draw.js"></script>
 </head>
 <body>
-  <div class="wrap" style="width: 600px; margin: 0 auto;">
-    <header>
-      <h1>F-Chess v0.01</h1>
-    </header>
-    <main>
-      <canvas id="play-ground" width="600" height="600"></canvas>
-    <div id="status-bar">
-      <p>TURN: <span class="turn">FRIEND</span></p>
+  <header class="center-block">
+    <h1 class="text-center">F-Chess v0.01</h1>
+    <p class="text-center">説明。</p>
+    <br>
+  </header>
+  <main class="center-block">
+    <!--Enemy-status-->
+    <div class="fc-player-status-bar fc-enemy-status">
+      <div class="fc-team-name">Enemy</div>
+      <div class="fc-character-status character-enemy-01">
+        <span class="character-name">Enemy character #01</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-02">
+        <span class="character-name">Enemy character #02</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-03">
+        <span class="character-name">Enemy character #03</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-04">
+        <span class="character-name">Enemy character #04</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-05">
+        <span class="character-name">Enemy character #05</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
     </div>
-    </main>
+    <!--Friend-status-->
+    <div class="fc-player-status-bar fc-friend-status">
+      <div class="fc-team-name text-right">Friend</div>
+      <div class="fc-character-status character-enemy-01">
+        <span class="character-name">Enemy character #01</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-02 character-dead">
+        <span class="character-name">Enemy character #02</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-03">
+        <span class="character-name">Enemy character #03</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
+        </div>
+      </div>
+    <div class="fc-character-status character-enemy-04">
+      <span class="character-name">Enemy character #04</span>
+      <div class="progress fc-progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
+      </div>
+    </div>
+    <div class="fc-character-status character-enemy-05">
+      <span class="character-name">Enemy character #05</span>
+      <div class="progress fc-progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
+      </div>
+    </div>
   </div>
+    <canvas id="play-ground" width="600" height="600"></canvas>
+    <div class="fc-field-status-bar">
+      <p>TURN: <span class="fc-turn"></span></p>
+    </div>
+  </main>
 </body>
 </html>
