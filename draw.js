@@ -263,13 +263,6 @@ function drawRange(range,x,y,r,g,b){
   }
 }
 
-function drawCharacterStatetusBar() {
-  var numFriend = test_Friend.length;
-  var numEnemy = test_Enemy.length;
-
-
-}
-
 function rewriteStatus() {
   rewriteTurnState();
   rewriteCharacterState();
