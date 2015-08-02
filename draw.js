@@ -42,6 +42,14 @@ var CHARACTER_PARAMETER = [
   }
 ]
 
+var moveRange = [
+  2,
+  0,0,1,0,0,
+  0,1,1,1,0,
+  1,1,1,1,1,
+  0,1,1,1,1,
+  0,0,1,0,1,]
+
 character = function(id, posx, posy, charaId) {
   this.posx = posx;
   this.posy = posy;
@@ -74,11 +82,14 @@ test_Enemy[4] = new character(104, 3, 4, 1);
 // Declarations
 var selectX = -1;
 var selectY = -1;
+//最後に選択した場所
 var selectedCharacter = -1;
+//ひとつ前に選択した場所
+var selectedCharacter2 = -1;
 var overX = -1;
 var overY = -1;
 var onFiled = false;
-var moveFlg = -1;
+//var moveFlg = -1;
 var turn = 'friend';
 var selectCharacterState = false;
 
@@ -164,14 +175,12 @@ function redraw(e, flag){
     selectX = Math.floor((e.pageX - canvasPosition.left) / SQUARE_WIDTH);
     selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
   }
-  drawRange(selectCharacterState.move,selectX,selectY,0,144,255);
-  drawRange(selectCharacterState.attackableRange,selectX,selectY,200,20,0);
+  drawRange();
   drawField();
 }
 
 //マスを塗りつぶす
 function drawSquare(x,y,r,g,b){
-  //convertpositionで取った座標17ずつずれてる。
   obj = convertPosition(x,y,false);
   ctxCanvas.lineWidth = 0.0;
   ctxCanvas.fillStyle = "rgb("+r+","+g+","+b+")";
@@ -237,24 +246,20 @@ function drawField(){
   }
 }
 
-function drawRange(range,x,y,r,g,b){
-  var i,j;
-  var state = getCharacterState(selectedCharacter);
-  //console.log(state);
-  //範囲内マスの座標は取れたけど、それを塗りつぶすのが出来てない(drawSquare)
-
-  if(selectedCharacter !== -1){
-    for (i = -1*range; i < range+1;i++){
-        //console.log(i,move*2+1-Math.abs(i)*2);
-      for(j = 0;j < range*2+1-Math.abs(i)*2; j++){
-        if(j%2 == 0){
-          //console.log(j/2+x,i+y);
-          drawSquare(j/2+x,i+y,r,g,b);
+function drawRange(){
+  var range = moveRange[0];
+  var characterState = getCharacterState(selectedCharacter);
+  var lx = characterState.posx;
+  var ly = characterState.posy;
+  var count = 1;
+  //キャラクターを選択した状態で何もないところを選択したとき
+  if(selectedCharacter != -1){
+    for(var i = -range; i <= range; i++){
+      for(var j = -range; j <= range; j++){
+        if(moveRange[count] == 1){
+          drawSquare(lx+j,ly+i,255,0,0);
         }
-        else{
-          //console.log(Math.ceil(j/2)*-1+x,i+y);
-          drawSquare(Math.ceil(j/2)*-1+x,i+y,r,g,b);
-        }
+        count++;
       }
     }
   }
@@ -274,6 +279,7 @@ function selectCharacter(e){
     selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
   };
 
+  selectedCharacter2 = selectedCharacter;
   // クリックしたとこのキャラを検索。
   // 同じキャラが選択されたとき or 見つからなかったとき、-1を代入。
   var temp = searchCharacter(selectX, selectY, 0, true);
@@ -291,41 +297,25 @@ function selectCharacter(e){
 
 function moveCharacter(x, y){
 
-  var characterId = selectedCharacter;
-  var characterState = getCharacterState(moveFlg);
+  var range = moveRange[0];
+  var characterState = getCharacterState(selectedCharacter2);
   var lx = characterState.posx;
   var ly = characterState.posy;
-
-  // console.log(moveFlg, selectedCharacter);
-  // console.log(characterState);
-
-  if (moveFlg === -1) {
-    moveFlg = characterId;
-  } else {
-    if (characterId != -1 || Math.abs(x - lx) + Math.abs(y - ly) > characterState.move) {
-      //範囲外
-      console.log("This postion protruding from moverenge");
-      moveFlg = -1;
-    } else if(characterState.movable === true){
-      //移動
-      console.log(characterState.movable);
-      if (turn === 'friend') {
-        if (moveFlg < 100) {
+  var count = 1;
+  //キャラクターを選択した状態で何もないところを選択したとき
+  if(selectedCharacter2 != -1 && selectedCharacter === -1){
+    for(var i = -range; i <= range; i++){
+      for(var j = -range; j <= range; j++){
+        if(moveRange[count] === 1 && characterState.movable && x == lx+j && y == ly+i){
           characterState.posx = x;
           characterState.posy = y;
+          characterState.movable = false;
         }
-      };
-      if (turn === 'enemy') {
-        if (moveFlg >= 100) {
-          characterState.posx = x;
-          characterState.posy = y;
-        }
-      };
-      moveFlg = -1;
-      characterState.movable = false;
-      attack(characterState.id);
-    };
-  };
+       //console.log(moveRange[count],lx+j,x,ly+i,y);
+       count++;
+      }
+    }
+  }
 }
 
 function searchCharacter(x, y, range, flag){
