@@ -50,6 +50,7 @@ character = function(id, posx, posy, charaId) {
   this.movable = true;
   this.name = CHARACTER_PARAMETER[charaId].name;
   this.cost = CHARACTER_PARAMETER[charaId].cost;
+  this.maxHitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
   this.hitPoint = CHARACTER_PARAMETER[charaId].hitPoint;
   this.attack = CHARACTER_PARAMETER[charaId].attack;
   this.attackableRange = CHARACTER_PARAMETER[charaId].attackableRange;
@@ -167,6 +168,8 @@ function redraw(e, flag){
   drawRange(selectCharacterState.move,selectX,selectY,0,144,255);
   drawRange(selectCharacterState.attackableRange,selectX,selectY,200,20,0);
   drawField();
+
+  rewriteCharacterState();
 }
 
 //マスを塗りつぶす
@@ -260,11 +263,57 @@ function drawRange(range,x,y,r,g,b){
   }
 }
 
-function rewriteStatus(){
-  var statusBar = $('#status-bar > p');
-  statusBar.children('span.turn').text(turn);
+function rewriteStatus() {
+  rewriteTurnState();
+  rewriteCharacterState();
 }
 
+function rewriteTurnState() {
+  var statusBar = $('.fc-field-status-bar > p');
+  statusBar.children('span.fc-turn').text(turn);
+}
+
+function rewriteCharacterState() {
+  var friendState = $('.fc-friend-status > .fc-character-status');
+  var enemyState = $('.fc-enemy-status > .fc-character-status');
+
+  friendState.each(function(i, elem) {
+    characterName = $(this).children('.character-name');
+    progressBar = $(this).find('.progress-bar');
+    characterHitPoint = test_Friend[i].hitPoint / test_Friend[i].maxHitPoint * 100;
+
+    characterName.text(test_Friend[i].name);
+    progressBar.attr('style', 'width: ' + characterHitPoint + '%');
+    progressBar.text(characterHitPoint+ '%');
+
+    if (characterHitPoint < 20) {
+      progressBar.addClass('progress-bar-danger');
+    } else {
+      progressBar.removeClass('progress-bar-danger');
+    }
+
+  });
+
+  enemyState.each(function(i, elem) {
+    characterName = $(this).children('.character-name');
+    progressBar = $(this).find('.progress-bar');
+    characterHitPoint = test_Enemy[i].hitPoint / test_Enemy[i].maxHitPoint * 100;
+
+    characterName.text(test_Enemy[i].name);
+    progressBar.attr('style', 'width: ' + characterHitPoint + '%');
+    progressBar.text(characterHitPoint+ '%');
+
+    if (characterHitPoint < 20) {
+      progressBar.addClass('progress-bar-danger');
+    } else {
+      progressBar.removeClass('progress-bar-danger');
+    }
+
+  });
+}
+
+
+// ==============================================================================================
 function selectCharacter(e){
   /*
   (selectY, selectX)
