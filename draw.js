@@ -10,8 +10,11 @@ var CHARACTER_PARAMETER = [
     "cost": 1,
     "hitPoint": 3,
     "attack": 1,
-    "attackableRange": 2,
-    "move": 1
+    "attackableRange": [2,23,2,13,10],
+    "move": [1,
+             1, 1, 1,
+             0, 1, 0,
+             0, 0, 0]
   },
   {
     "id": 1,
@@ -20,7 +23,13 @@ var CHARACTER_PARAMETER = [
     "hitPoint": 7,
     "attack": 3,
     "attackableRange": 2,
-    "move": 3
+    "move": [2,
+             1, 1, 1, 1, 1, 
+             1, 0, 0, 0, 1, 
+             1, 0, 1, 0, 1, 
+             1, 0, 0, 0, 1, 
+             1, 1, 1, 1, 1
+             ]
   },
   {
     "id": 2,
@@ -29,7 +38,15 @@ var CHARACTER_PARAMETER = [
     "hitPoint": 3,
     "attack": 2,
     "attackableRange": 2,
-    "move": 2
+    "move": [3,
+             1, 0, 0, 1, 0, 0, 1,
+             0, 1, 0, 1, 0, 1, 0,
+             0, 0, 1, 1, 1, 0, 0,
+             0, 0, 0, 1, 0, 0, 0,
+             0, 0, 0, 1, 0, 0, 0,
+             0, 0, 0, 1, 0, 0, 0,
+             0, 0, 0, 1, 0, 0, 0
+             ]
   },
   {
     "id": 3,
@@ -38,7 +55,17 @@ var CHARACTER_PARAMETER = [
     "hitPoint": 8,
     "attack": 3,
     "attackableRange": 2,
-    "move": 5
+    "move": [4,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1,
+             1,1,1,1,1,1,1,1,1
+             ]
   }
 ]
 
@@ -83,9 +110,9 @@ test_Enemy[4] = new character(104, 3, 4, 1);
 var selectX = -1;
 var selectY = -1;
 //最後に選択した場所
-var selectedCharacter = -1;
+var currentSelect = -1;
 //ひとつ前に選択した場所
-var selectedCharacter2 = -1;
+var previousSelect = -1;
 var overX = -1;
 var overY = -1;
 var onFiled = false;
@@ -247,17 +274,18 @@ function drawField(){
 }
 
 function drawRange(){
-  var range = moveRange[0];
-  var characterState = getCharacterState(selectedCharacter);
+  var characterState = getCharacterState(currentSelect);
   var lx = characterState.posx;
   var ly = characterState.posy;
   var count = 1;
   //キャラクターを選択した状態で何もないところを選択したとき
-  if(selectedCharacter != -1){
+  if(currentSelect != -1){
+    var range = characterState.move[0];
+
     for(var i = -range; i <= range; i++){
       for(var j = -range; j <= range; j++){
-        if(moveRange[count] == 1){
-          drawSquare(lx+j,ly+i,255,0,0);
+        if(characterState.move[count] === 1){
+          drawSquare(lx + j, ly + i, 50, 0, 200);
         }
         count++;
       }
@@ -279,41 +307,42 @@ function selectCharacter(e){
     selectY = Math.floor((e.pageY - canvasPosition.top) / SQUARE_WIDTH);
   };
 
-  selectedCharacter2 = selectedCharacter;
+  previousSelect = currentSelect;
   // クリックしたとこのキャラを検索。
   // 同じキャラが選択されたとき or 見つからなかったとき、-1を代入。
   var temp = searchCharacter(selectX, selectY, 0, true);
-  if (selectedCharacter === temp[1] || temp[0] === false) {
-    selectedCharacter = -1;
+  if (currentSelect === temp[1] || temp[0] === false) {
+    currentSelect = -1;
   } else {
-    selectedCharacter = temp[1];
+    currentSelect = temp[1];
   }
 
   moveCharacter(selectX, selectY);
-  selectCharacterState = getCharacterState(selectedCharacter);
-  console.log('selected', selectedCharacter);
+  selectCharacterState = getCharacterState(currentSelect);
+  console.log('selected', currentSelect);
 
 }
 
 function moveCharacter(x, y){
 
-  var range = moveRange[0];
-  var characterState = getCharacterState(selectedCharacter2);
-  var lx = characterState.posx;
-  var ly = characterState.posy;
-  var count = 1;
-  //キャラクターを選択した状態で何もないところを選択したとき
-  if(selectedCharacter2 != -1 && selectedCharacter === -1){
-    for(var i = -range; i <= range; i++){
-      for(var j = -range; j <= range; j++){
-        if(moveRange[count] === 1 && characterState.movable && x == lx+j && y == ly+i){
-          characterState.posx = x;
-          characterState.posy = y;
-          characterState.movable = false;
-        }
-       //console.log(moveRange[count],lx+j,x,ly+i,y);
-       count++;
-      }
+  //キャラクターを選択した状態で何もないところを選択したとき(移動可能)
+  if(previousSelect != -1 && currentSelect === -1){
+    var characterState = getCharacterState(previousSelect);
+    var range = characterState.move[0];
+
+    if (Math.abs(x - characterState.posx) > range || Math.abs(y - characterState.posy) > range) {
+      return -1;
+    };
+
+    var lx = x - characterState.posx + range;
+    var ly = y - characterState.posy + range;
+
+    var index = lx + ly * (2 * range + 1) + 1;
+
+    if(characterState.move[index] === 1  && characterState.movable){
+      characterState.posx = x;
+      characterState.posy = y;
+      characterState.movable = false;
     }
   }
 }
