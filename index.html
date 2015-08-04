@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html ng-app="f-chess" lang="ja">
 <head>
   <meta charset="utf-8">
   <title>F-JChess</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script src="draw.js"></script>
 </head>
 <body>
   <header class="center-block">
@@ -72,23 +68,32 @@
           <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
         </div>
       </div>
-    <div class="fc-character-status character-enemy-04">
-      <span class="character-name">Enemy character #04</span>
-      <div class="progress fc-progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
+      <div class="fc-character-status character-enemy-04">
+        <span class="character-name">Enemy character #04</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
+        </div>
+      </div>
+      <div class="fc-character-status character-enemy-05">
+        <span class="character-name">Enemy character #05</span>
+        <div class="progress fc-progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
+        </div>
       </div>
     </div>
-    <div class="fc-character-status character-enemy-05">
-      <span class="character-name">Enemy character #05</span>
-      <div class="progress fc-progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="100" aria-valuemax="0" style="width: 0%;">100%</div>
-      </div>
-    </div>
-  </div>
     <canvas id="play-ground" width="600" height="600"></canvas>
     <div class="fc-field-status-bar">
       <p>TURN: <span class="fc-turn"></span></p>
     </div>
   </main>
+
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="draw.js"></script>
+  <script src="app.js"></script>
+
+  </script>
 </body>
 </html>
