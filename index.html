@@ -12,7 +12,48 @@
     <p class="text-center">説明。</p>
     <br>
   </header>
-  <main class="center-block">
+  <!-- TODO: コスト、キャラのpram、-->
+  <main class="center-block menu-enabled">
+    <div class="menu" ng-controller="MenuController as menu">
+    <div class="menu-head">
+        <div class="messages">
+          <h2>{{ menu.status.message }}</h2>
+          <p class="description">キャラクターを選択してください。</p>
+        </div>
+        <div class="cost-gauge">
+          <div class="progress fc-cost-gauge">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">100%</div>
+          </div>
+        </div>
+      </div>
+      <!--chooseCharcter-->
+      <div class="characters">
+        <div class="character">
+          <h3>D</h3>
+          <p class="character-name">daisyo</p>
+        </div>
+        <div class="character">
+          <h3>I</h3>
+          <p class="character-name">ichgw</p>
+        </div>
+        <div class="character">
+          <h3>M</h3>
+          <p class="character-name">miho</p>
+        </div>
+        <div class="character">
+          <h3>P</h3>
+          <p class="character-name">pupepon</p>
+        </div>
+        <div class="character">
+          <h3>H</h3>
+          <p class="character-name">haseaki</p>
+        </div>
+        <div class="button-next">
+          Next
+        </div>
+      </div>
+    </div>
+
     <!--Enemy-status-->
     <div class="fc-player-status-bar fc-enemy-status">
       <div class="fc-team-name">Enemy</div>
