@@ -3,45 +3,6 @@ var PLAYGROUND_WIDTH = 600;
 var SQUARE_WIDTH = PLAYGROUND_WIDTH / NUMBER_OF_SQUARE;
 var MAX_CHARACTER = 5;
 
-var CHARACTER_PARAMETER = [
-  {
-    "id": 0,
-    "name": "daisyo",
-    "cost": 1,
-    "hitPoint": 3,
-    "attack": 1,
-    "attackableRange": 2,
-    "move": 1
-  },
-  {
-    "id": 1,
-    "name": "pupepon",
-    "cost": 3,
-    "hitPoint": 7,
-    "attack": 3,
-    "attackableRange": 2,
-    "move": 3
-  },
-  {
-    "id": 2,
-    "name": "haseaki",
-    "cost": 2,
-    "hitPoint": 3,
-    "attack": 2,
-    "attackableRange": 2,
-    "move": 2
-  },
-  {
-    "id": 3,
-    "name": "miho",
-    "cost": 5,
-    "hitPoint": 8,
-    "attack": 3,
-    "attackableRange": 2,
-    "move": 5
-  }
-]
-
 character = function(id, posx, posy, charaId) {
   this.posx = posx;
   this.posy = posy;
